@@ -85,6 +85,10 @@ import tripsGenerator
 networkgenerator.networkgenerator(l,n)
 
 #generates the necessary files (C.dat, J.dat, E.dat ...)
+directory = os.path.dirname('postprocess/data/')
+if not os.path.exists(directory):
+	os.mkdir(directory)
+
 files.dat()
 
 #generates de configuration file
