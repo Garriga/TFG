@@ -69,6 +69,10 @@ def getTrip(departLane, arrivalLane):
     arrivalEdge = arrivalLane[0:(arrivalLane.index('_')-1)]
     return departEdge + '->' + arrivalEdge
 
+def checkDirectory(path)
+	directory = os.path.dirname(path)
+	if not os.path.exists(directory):
+		os.mkdir(directory)
 ################################################################################
 #								NETWORK GENERTION						       #
 ################################################################################
@@ -81,14 +85,15 @@ import files
 modl = imp.load_source('tripsGenerator', path + '/simGen/tripsGenerator.py')
 import tripsGenerator
 
+checkDirectory('netDef/')
+checkDirectory('netDef/csv/')
+checkDirectory('netDef/xml/')
+
 #generates the network
 networkgenerator.networkgenerator(l,n)
 
 #generates the necessary files (C.dat, J.dat, E.dat ...)
-directory = os.path.dirname('postprocess/data/')
-if not os.path.exists(directory):
-	os.mkdir(directory)
-
+checkDirectory('postprocess/data/')
 files.dat()
 
 #generates de configuration file
