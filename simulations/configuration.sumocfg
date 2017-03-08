@@ -1,0 +1,15 @@
+<configuration>
+	<input>
+		<net-file value="input/mapa.net.xml"/>
+		<route-files value="input/rutes.rou.xml"/>>
+		<additional-files value="input/additional.add.xml"/>
+	</input>	
+	<output>
+		<tripinfo-output value="output/xml/tripinfo.xml"/>
+	</output>
+	<time>
+		<begin value="0"/>
+		<end value="28800"/>
+	</time>
+</configuration>
+
