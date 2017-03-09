@@ -2,19 +2,11 @@
 from __future__ import division
 import subprocess, imp, os, csv, time
 start_time = time.time()
-################################################################################
-#								PROGRAM INFO							       #
-################################################################################
-#this algorithm runs every case in a defined basic scenario (reference case).
+#this file runs every case in a defined basic scenario (reference case).
 #This reference case considers actuated traffic lights with a phase duration of 
 #40 second, a minDur of 5 seconds and a maxDur of 60 seconds. 
 
-#The cases are defined as new flows (that may be equal to some of the reference flows).
-
-#we build a matrix that contains the mean of the detectors lectures by street.
-
-#a table of mean travel time and max mean travel time per route is also generated at every 
-#anomaly case in order to obtain an optimal minDur for the actuated program of the traffic lights. 
+path = os.getcwd() #ends without /
 
 #simulation global parameters
 tsim =30*3600
@@ -22,9 +14,42 @@ n = 5
 l = 150
 frequency = 60
 seed = 10
-################################################################################
-#                       AUXILIARY FUNCTIONS                                    #
-################################################################################
+
+#auxiliary function
+def checkDirectory(path)
+	directory = os.path.dirname(path)
+	if not os.path.exists(directory):
+		os.mkdir(directory)
+		
+######################
+#GENERATES THE NETWORK
+######################
+modl = imp.load_source('networkgenerator', path + '/simGen/networkgenerator.py')
+import networkgenerator
+modl = imp.load_source('files', path + '/pythons/files.py')	
+import files	
+modl = imp.load_source('tripsGenerator', path + '/simGen/tripsGenerator.py')
+import tripsGenerator
+
+checkDirectory('netDef/')
+checkDirectory('netDef/csv/')
+checkDirectory('netDef/xml/')
+checkDirectory('input/')
+
+#generates the network
+networkgenerator.networkgenerator(l,n)
+
+#generates the necessary files (C.dat, J.dat, E.dat ...)
+checkDirectory('postprocess/data/')
+files.dat()
+
+#generates de configuration file
+files.configuration(tsim);
+
+####################
+#AUXILIARY FUNCTIONS
+####################
+#these functions are used to elaborate the summary tables containing the travel times
 def getTimes(case, maxDur):
     totalTime = 0;
     totalLoss = 0;
@@ -69,44 +94,26 @@ def getTrip(departLane, arrivalLane):
     arrivalEdge = arrivalLane[0:(arrivalLane.index('_')-1)]
     return departEdge + '->' + arrivalEdge
 
-def checkDirectory(path)
-	directory = os.path.dirname(path)
-	if not os.path.exists(directory):
-		os.mkdir(directory)
-################################################################################
-#								NETWORK GENERTION						       #
-################################################################################
-path = os.getcwd() #ends without /
 
-modl = imp.load_source('networkgenerator', path + '/simGen/networkgenerator.py')
-import networkgenerator
-modl = imp.load_source('files', path + '/pythons/files.py')	
-import files	
-modl = imp.load_source('tripsGenerator', path + '/simGen/tripsGenerator.py')
-import tripsGenerator
 
-checkDirectory('netDef/')
-checkDirectory('netDef/csv/')
-checkDirectory('netDef/xml/')
 
-#generates the network
-networkgenerator.networkgenerator(l,n)
-
-#generates the necessary files (C.dat, J.dat, E.dat ...)
-checkDirectory('postprocess/data/')
-files.dat()
-
-#generates de configuration file
-files.configuration(tsim);
-
-################################################################################
-#								RUNNING THE CASES							   #
-################################################################################
-#cases = ['case0', 'case1', 'case2', 'case3']    #names of the flow files must be: case0.dat, case1.dat, case2.dat, etc
+##################
+#RUNNING THE CASES
+##################
 cases = ['case0', 'case1', 'case2', 'case3', 'case4', 'case5', 'case6', 'case7', 'case8', 'case9', 'case10', 'case11', 'case12', 'case13']
 values = range(10,61,5)
 
 header =  [False]*len(values)
+checkDirectory('output/')
+checkDirectory('output/files/')
+checkDirectory('output/files/nVeh/')
+checkDirectory('output/files/occupancy/')
+checkDirectory('output/files/speed/')
+checkDirectory('output/files/times/')
+checkDirectory('output/csv/')
+checkDirectory('output/csv/detectors/')
+checkDirectory('output/csv/tripinfo/')
+checkDirectory('output/xml/')
 
 for case in cases:
     start_traffic = time.time()
