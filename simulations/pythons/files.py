@@ -30,17 +30,17 @@ def dat():
 	os.system("$SUMO_HOME/tools/xml/xml2csv.py netDef/xml/mapa.tll.xml -o netDef/csv/mapa.tll.csv")
 
 	#generate the J.dat file
-	modl = imp.load_source('generateJdat','postprocess/codis/generateJdat.py')
+	modl = imp.load_source('generateJdat','postprocess/codes/generateJdat.py')
 	import generateJdat
 	generateJdat
 
 	#generates the E.dat file
-	modl = imp.load_source('generateEdgeFiles','postprocess/codis/generateEdgeFiles.py')
+	modl = imp.load_source('generateEdgeFiles','postprocess/codes/generateEdgeFiles.py')
 	import generateEdgeFiles
 	generateEdgeFiles
 	
 	#generates the C.dat file
-	subprocess.call(["Rscript", "postprocess/codis/generateCdat.R"])
+	subprocess.call(["Rscript", "postprocess/codes/generateCdat.R"])
 
 #generates the additional file
 def additional(maxDur, frequency):
