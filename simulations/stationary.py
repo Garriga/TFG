@@ -3,8 +3,8 @@ from __future__ import division
 import subprocess, imp, os, csv, time
 start_time = time.time()
 #this file runs every case in a defined basic scenario (reference case).
-#This reference case considers actuated traffic lights with a phase duration of 
-#40 second, a minDur of 5 seconds and a maxDur of 60 seconds. 
+#This reference case considers actuated traffic lights with a phase duration of
+#40 second, a minDur of 5 seconds and a maxDur of 60 seconds.
 
 path = os.getcwd() #ends without /
 
@@ -20,14 +20,14 @@ def checkDirectory(path)
 	directory = os.path.dirname(path)
 	if not os.path.exists(directory):
 		os.mkdir(directory)
-		
+	
 ######################
 #GENERATES THE NETWORK
 ######################
 modl = imp.load_source('networkgenerator', path + '/simGen/networkgenerator.py')
 import networkgenerator
-modl = imp.load_source('files', path + '/pythons/files.py')	
-import files	
+modl = imp.load_source('files', path + '/pythons/files.py')
+import files
 modl = imp.load_source('tripsGenerator', path + '/simGen/tripsGenerator.py')
 import tripsGenerator
 
