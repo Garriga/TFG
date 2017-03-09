@@ -16,7 +16,7 @@ frequency = 60
 seed = 10
 
 #auxiliary function
-def checkDirectory(path)
+def checkDirectory(path):
 	directory = os.path.dirname(path)
 	if not os.path.exists(directory):
 		os.mkdir(directory)
