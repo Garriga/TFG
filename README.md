@@ -13,4 +13,4 @@ All the files must be executed having as working directory the simulations folde
 
 ## Requierements
 You need to have installed SUMO (Simulation for Urban Mobility), Python and R. 
-**R packages**: plyr.
+**R packages**: plyr, tictoc
