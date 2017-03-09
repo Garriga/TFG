@@ -147,7 +147,7 @@ for case in cases:
         print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))
 		
         #write the detectors measures in the csv
-        subprocess.call(["Rscript", "analisi_resultats/writeDetectorsCsv.R", str(maxDur), case, str(header[i])])
+        subprocess.call(["Rscript", "postprocess/codes/writeDetectorsCsv.R", str(maxDur), case, str(header[i])])
         header[i] = True    #once we have written the header it must be true, to avoid writing it again
         start_writecsv = time.time()        
         #travel times depending on tls configuration
