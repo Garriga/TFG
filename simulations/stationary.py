@@ -95,9 +95,6 @@ def getTrip(departLane, arrivalLane):
     arrivalEdge = arrivalLane[0:(arrivalLane.index('_')-1)]
     return departEdge + '->' + arrivalEdge
 
-
-
-
 ##################
 #RUNNING THE CASES
 ##################
@@ -118,10 +115,6 @@ checkDirectory('output/csv/')
 checkDirectory('output/csv/detectors/')
 checkDirectory('output/csv/tripinfo/')
 checkDirectory('output/xml/')
-
-import sys
-log = open('output/log.txt','w')
-sys.stdout = log
 
 for case in cases:
     start_traffic = time.time()
@@ -166,4 +159,3 @@ for case in cases:
     timesLoss.close()
 
 print 'Total time of execution: {} seconds'.format(str(time.time() - start_time))
-log.close()
