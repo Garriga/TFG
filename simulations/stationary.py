@@ -101,10 +101,11 @@ def getTrip(departLane, arrivalLane):
 ##################
 #RUNNING THE CASES
 ##################
-cases = ['case0', 'case1', 'case2', 'case3', 'case4', 'case5', 'case6', 'case7', 'case8', 'case9', 'case10', 'case11', 'case12', 'case13']
+cases = ['case0', 'case1', 'case2', 'case3', 'case4', 'case5', 'case6', 'case7']
 values = range(10,61,5)
 
 header =  [False]*len(values)
+
 checkDirectory('output/')
 checkDirectory('output/files/')
 checkDirectory('output/files/nVeh/')
