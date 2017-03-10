@@ -12,6 +12,7 @@ path = os.getcwd() #ends without /
 tsim =6*3600
 n = 5
 l = 150
+nlanes = 3
 frequency = 60
 seed = 10
 
@@ -37,7 +38,7 @@ checkDirectory('netDef/xml/')
 checkDirectory('input/')
 
 #generates the network
-networkgenerator.networkgenerator(l,n)
+networkgenerator.networkgenerator(l,n, nlanes)
 
 #generates the necessary files (C.dat, J.dat, E.dat ...)
 checkDirectory('postprocess/data/')
