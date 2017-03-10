@@ -9,7 +9,7 @@ start_time = time.time()
 path = os.getcwd() #ends without /
 
 #simulation global parameters
-tsim =30*3600
+tsim =6*3600
 n = 5
 l = 150
 frequency = 60
