@@ -8,7 +8,7 @@ start_time = time.time()
 
 path = os.getcwd() #ends without /
 
-#simulation global parameters
+#network parameters
 n = 5
 l = 150
 nlanes = 3
