@@ -1,16 +1,16 @@
 def generate(l,n,nlanes): 
     from simGen import networkgenerator, tripsGenerator
     from pythons import files
-    from pythons import directory
+    from pythons import auxiliary
     
-    directory.check('netDef/')
-    directory.check('netDef/csv/')
-    directory.check('netDef/xml/')
-    directory.check('input/')
+    aux.check('netDef/')
+    aux.check('netDef/csv/')
+    aux.check('netDef/xml/')
+    aux.check('input/')
 
     #generates the network
     networkgenerator.networkgenerator(l,n, nlanes)
 
     #generates the necessary files (C.dat, J.dat, E.dat ...)
-    directory.check('postprocess/data/')
+    aux.check('postprocess/data/')
     files.dat()
