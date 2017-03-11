@@ -196,12 +196,12 @@ for case in cases:
     print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))	
         
     #write the detectors measures in the csv
-    subprocess.call(["Rscript", "postprocess/codes/writeDetectorsCsv.R", str(maxDurRef), case, str(header[i])])
-    header[i] = True    #once we have written the header it must be true, to avoid writing it again
-    start_writecsv = time.time()        
+    #subprocess.call(["Rscript", "postprocess/codes/writeDetectorsCsv.R", str(maxDurRef), case, str(header[i])])
+    #header[i] = True    #once we have written the header it must be true, to avoid writing it again
+    #start_writecsv = time.time()        
     
-    print 'Writing travel times: {} seconds'.format(str(time.time() - start_writecsv))         
-    print ''
+    #print 'Writing travel times: {} seconds'.format(str(time.time() - start_writecsv))         
+    #print ''
 
 print 'Total time of running test simulations: {} seconds'.format(str(time.time() - start_test))
 print ''
