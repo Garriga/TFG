@@ -16,10 +16,10 @@ nw.generate(n,l,nlanes)
 
 from python import train, test
 
-train.simulate(t_train, seed_train)
+train.simulate(t_train, seed_train, frequency)
 
 #obtenim el 
 ...
 
-test.simulate(t_test, seed_test, maxDur)
+test.simulate(t_test, seed_test, maxDur, frequency)
 
