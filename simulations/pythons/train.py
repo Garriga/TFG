@@ -1,7 +1,7 @@
 def simulate(tsim, seed, frequency):
     from __future__ import division
     from pythons import directory
-    import subprocess, os, csv, time
+    import subprocess, os, time
     start_time = time.time()
     #This reference case considers actuated traffic lights with a phase duration of
     #40 second, a minDur of 5 seconds and a maxDur of 60 seconds.
