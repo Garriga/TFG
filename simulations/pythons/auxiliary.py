@@ -1,3 +1,9 @@
+def check(path):
+    import os
+    directory = os.path.dirname(path)
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+
 def getTimes(case, maxDur):
     import csv
     totalTime = 0;
