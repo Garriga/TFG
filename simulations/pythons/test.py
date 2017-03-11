@@ -9,14 +9,14 @@ def simulate(tsim, seed, maxDur, frequency):
 
     header =  [False]*len(values)
 
-    from pythons import directory
-    directory.check('output/')
+    from pythons import auxiliary
+    aux.check('output/')
 
-    directory.check('output/test/')
-    directory.check('output/test/detectors/')
-    directory.check('output/test/tripinfo/')
+    aux.check('output/test/')
+    aux.check('output/test/detectors/')
+    aux.check('output/test/tripinfo/')
 
-    directory.check('output/xml/')
+    aux.check('output/xml/')
 
     #run train data
     start_train = time.time()
