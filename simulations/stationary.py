@@ -9,12 +9,10 @@ start_time = time.time()
 path = os.getcwd() #ends without /
 
 #simulation global parameters
-tsim =6*3600
 n = 5
 l = 150
 nlanes = 3
 frequency = 60
-seed = 10
 
 #auxiliary function
 def checkDirectory(path):
@@ -104,24 +102,34 @@ values = range(10,61,5)
 header =  [False]*len(values)
 
 checkDirectory('output/')
-checkDirectory('output/files/')
-checkDirectory('output/files/nVeh/')
-checkDirectory('output/files/occupancy/')
-checkDirectory('output/files/speed/')
-checkDirectory('output/files/times/')
-checkDirectory('output/files/times/travelTime/')
-checkDirectory('output/files/times/timeLoss/')
-checkDirectory('output/csv/')
-checkDirectory('output/csv/detectors/')
-checkDirectory('output/csv/tripinfo/')
+
+checkDirectory('output/test/')
+checkDirectory('output/test/detectors/')
+checkDirectory('output/test/tripinfo/')
+
+checkDirectory('output/train/')
+checkDirectory('output/train/files/')
+checkDirectory('output/train/files/nVeh/')
+checkDirectory('output/train/files/occupancy/')
+checkDirectory('output/train/files/speed/')
+checkDirectory('output/train/files/times/')
+checkDirectory('output/train/files/times/travelTime/')
+checkDirectory('output/train/files/times/timeLoss/')
+checkDirectory('output/train/csv/')
+checkDirectory('output/train/csv/detectors/')
+checkDirectory('output/train/csv/tripinfo/')
+
 checkDirectory('output/xml/')
 
+#run train data
+tsim =10*3600
+seed = 10
 for case in cases:
     start_traffic = time.time()
     print '-------- Generating traffic files --------'
-    timesDoc = open("output/files/times/travelTime/" + case + ".csv", 'w')
+    timesDoc = open("output/train/files/times/travelTime/" + case + ".csv", 'w')
     timesDoc.write('maxDur;meanTime;maxTime\n')
-    timesLoss = open("output/files/times/timeLoss/" + case + "Loss.csv", 'w')
+    timesLoss = open("output/train/files/times/timeLoss/" + case + "Loss.csv", 'w')
     timesLoss.write('maxDur;meanLoss;maxLoss\n')
     
     #generates the traffic for the simulation
@@ -141,8 +149,8 @@ for case in cases:
         start_simulation = time.time()
         subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1"])
         print ''
-        os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/csv/tripinfo/tripinfo{case}_{maxDur}.csv".format(case = case, maxDur = maxDur))
-        os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/csv/detectors/detectors{case}_{maxDur}.csv".format(case = case, maxDur = maxDur))
+        os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/train/csv/tripinfo/tripinfo{case}_{maxDur}.csv".format(case = case, maxDur = maxDur))
+        os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/train/csv/detectors/detectors{case}_{maxDur}.csv".format(case = case, maxDur = maxDur))
         print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))
 		
         #write the detectors measures in the csv
@@ -158,4 +166,44 @@ for case in cases:
     timesDoc.close()
     timesLoss.close()
 
+print 'Total time of running train simulations: {} seconds'.format(str(time.time() - start_time))
+
+#cost function
+
+maxDurRef
+#running the test data
+tsim =5*3600
+seed = 20
+start_test = time.time()
+for case in cases:
+    start_traffic = time.time()
+    print '-------- Generating traffic files --------'
+    #generates the traffic for the simulation
+    tripsGenerator.writeTrips(0, tsim, case, seed)	
+    subprocess.call(["duarouter", "-n", "input/mapa.net.xml", "-t", "input/trips.trips.xml", "-o", "input/rutes.rou.xml", "--unsorted-input", "true", "--ignore-errors", "true", "--departspeed", "10", "--departlane", "free"])    
+    print 'Traffic generation time: {} seconds'.format(str(time.time() - start_traffic))
+    print ''
+
+    print '-------- Simulating {case} with  maxDur {maxDur} (reference value) seconds --------'.format(case = case, maxDur = maxDurRef)
+    #generate additional file for the simulation
+    files.additional(maxDurRef, frequency)
+    #runs the simulation
+    start_simulation = time.time()
+    subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1"])
+    print ''
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/test/tripinfo/tripinfo{case}_{maxDur}.csv".format(case = case, maxDur = maxDurRef))
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/test/detectors/detectors{case}_{maxDur}.csv".format(case = case, maxDur = maxDurRef))
+    print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))	
+        
+    #write the detectors measures in the csv
+    subprocess.call(["Rscript", "postprocess/codes/writeDetectorsCsv.R", str(maxDurRef), case, str(header[i])])
+    header[i] = True    #once we have written the header it must be true, to avoid writing it again
+    start_writecsv = time.time()        
+    
+    print 'Writing travel times: {} seconds'.format(str(time.time() - start_writecsv))         
+    print ''
+
+print 'Total time of running test simulations: {} seconds'.format(str(time.time() - start_test))
+print ''
 print 'Total time of execution: {} seconds'.format(str(time.time() - start_time))
+
