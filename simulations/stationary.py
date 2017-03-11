@@ -167,46 +167,6 @@ for case in cases:
     timesLoss.close()
 
 print 'Total time of running train simulations: {} seconds'.format(str(time.time() - start_train))
-
-#cost function
-
-maxDurRef
-#running the test data
-start_test = time.time()
-tsim =5*3600
-seed = 20
-#generates de configuration file
-files.configuration(tsim)
-for case in cases:
-    start_traffic = time.time()
-    print '-------- Generating traffic files --------'
-    #generates the traffic for the simulation
-    tripsGenerator.writeTrips(0, tsim, case, seed)	
-    subprocess.call(["duarouter", "-n", "input/mapa.net.xml", "-t", "input/trips.trips.xml", "-o", "input/rutes.rou.xml", "--unsorted-input", "true", "--ignore-errors", "true", "--departspeed", "10", "--departlane", "free"])    
-    print 'Traffic generation time: {} seconds'.format(str(time.time() - start_traffic))
-    print ''
-
-    print '-------- Simulating {case} with  maxDur {maxDur} (reference value) seconds --------'.format(case = case, maxDur = maxDurRef)
-    #generate additional file for the simulation
-    files.additional(maxDurRef, frequency)
-    #runs the simulation
-    start_simulation = time.time()
-    subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1"])
-    print ''
-    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/test/tripinfo/tripinfo{case}_{maxDur}.csv".format(case = case, maxDur = maxDurRef))
-    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/test/detectors/detectors{case}_{maxDur}.csv".format(case = case, maxDur = maxDurRef))
-    print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))	
-        
-    #write the detectors measures in the csv
-    #subprocess.call(["Rscript", "postprocess/codes/writeDetectorsCsv.R", str(maxDurRef), case, str(header[i])])
-    #header[i] = True    #once we have written the header it must be true, to avoid writing it again
-    #start_writecsv = time.time()        
-    
-    #print 'Writing travel times: {} seconds'.format(str(time.time() - start_writecsv))         
-    #print ''
-
-print 'Total time of running test simulations: {} seconds'.format(str(time.time() - start_test))
-print ''
-print 'Total time of execution: {} seconds'.format(str(time.time() - start_time))
+print 'Total time of execution: {} seconds'.format(str(time.time()-start_time))
 
 os.system('rm -r output/xml/')
