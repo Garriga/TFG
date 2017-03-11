@@ -1,4 +1,5 @@
 def getTimes(case, maxDur):
+    import csv
     totalTime = 0;
     totalLoss = 0;
     n = 0
