@@ -42,9 +42,6 @@ networkgenerator.networkgenerator(l,n, nlanes)
 checkDirectory('postprocess/data/')
 files.dat()
 
-#generates de configuration file
-files.configuration(tsim);
-
 ####################
 #AUXILIARY FUNCTIONS
 ####################
@@ -56,7 +53,7 @@ def getTimes(case, maxDur):
     number = {}
     cumTime = {}
     cumLoss = {}
-    tripinfo = open ("output/csv/tripinfo/tripinfo{case}_{maxDur}.csv".format(case = case, maxDur = maxDur), 'r')
+    tripinfo = open ("output/train/csv/tripinfo/tripinfo{case}_{maxDur}.csv".format(case = case, maxDur = maxDur), 'r')
     reader = csv.reader(tripinfo, delimiter = ';')
     row = next(reader)
     posTime = row.index('tripinfo_duration')
@@ -122,8 +119,11 @@ checkDirectory('output/train/csv/tripinfo/')
 checkDirectory('output/xml/')
 
 #run train data
+start_train = time.time()
 tsim =10*3600
 seed = 10
+#generates de configuration file
+files.configuration(tsim)
 for case in cases:
     start_traffic = time.time()
     print '-------- Generating traffic files --------'
@@ -166,15 +166,17 @@ for case in cases:
     timesDoc.close()
     timesLoss.close()
 
-print 'Total time of running train simulations: {} seconds'.format(str(time.time() - start_time))
+print 'Total time of running train simulations: {} seconds'.format(str(time.time() - start_train))
 
 #cost function
 
 maxDurRef
 #running the test data
+start_test = time.time()
 tsim =5*3600
 seed = 20
-start_test = time.time()
+#generates de configuration file
+files.configuration(tsim)
 for case in cases:
     start_traffic = time.time()
     print '-------- Generating traffic files --------'
