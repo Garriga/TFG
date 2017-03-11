@@ -6,7 +6,7 @@ maxDur <- args[1]
 case <- args[2]
 header <- args[3]
 #extract inductionLoops data
-detName <- paste("output/csv/detectors/detectors", case, '_', maxDur, '.csv', sep = '')
+detName <- paste("output/train/csv/detectors/detectors", case, '_', maxDur, '.csv', sep = '')
 detectors <- read.csv(detName, sep = ";")
 #we preprocess the data.frame changing to most apropriate names
 names(detectors) <- substring(names(detectors), 10)
@@ -43,13 +43,10 @@ getDf <- function(s) {
 
 measures <- lapply(var, getDf)
 names(measures) <- var
-speedFile <- sprintf("output/files/speed/speed%s.csv", maxDur)
-nVehFile <- sprintf("output/files/nVeh/nVeh%s.csv", maxDur)
-occupancyFile <- sprintf("output/files/occupancy/occupancy%s.csv", maxDur)
+speedFile <- sprintf("output/train/files/speed/speed%s.csv", maxDur)
+nVehFile <- sprintf("output/train/files/nVeh/nVeh%s.csv", maxDur)
+occupancyFile <- sprintf("output/train/files/occupancy/occupancy%s.csv", maxDur)
 if (header == 'False') {
-  #write.table(c('case', names(measures[['nVehContrib']])), file = nVehFile, quote = FALSE, sep = ';', col.names = FALSE, row.names = FALSE)
-  #write.table(c('case', names(measures[['speed']])), file = speedFile, quote = FALSE, sep = ';', col.names = FALSE, row.names = FALSE)
-  #write.table(c('case', names(measures[['occupancy']])), file = occupancyFile, quote = FALSE, sep = ';', col.names = FALSE, row.names = FALSE)
   write.table(c(case, measures[['nVehContrib']]), file = nVehFile, quote = FALSE, sep = ';', col.names = c('case', names(measures[['nVehContrib']])), row.names = FALSE)
   write.table(c(case, measures[['speed']]), file = speedFile, quote = FALSE, sep = ';', col.names = c('case', names(measures[['speed']])), row.names = FALSE)
   write.table(c(case, measures[['occupancy']]), file = occupancyFile, quote = FALSE, sep = ';', col.names = c('case', names(measures[['speed']])), row.names = FALSE)
