@@ -1,6 +1,5 @@
 def simulate(tsim, seed, frequency):
     from __future__ import division
-    from pythons import directory
     import subprocess, os, time
     start_time = time.time()
     #This reference case considers actuated traffic lights with a phase duration of
@@ -11,29 +10,28 @@ def simulate(tsim, seed, frequency):
     cases = ['case0', 'case1', 'case2', 'case3', 'case4', 'case5', 'case6', 'case7']
     values = range(10,61,5)
     header =  [False]*len(values)
+    from pythons import auxiliary as aux
+    aux.check('output/')
+    aux.check('output/test/')
+    aux.check('output/test/detectors/')
+    aux.check('output/test/tripinfo/')
 
-    directory.check('output/')
-    directory.check('output/test/')
-    directory.check('output/test/detectors/')
-    directory.check('output/test/tripinfo/')
+    aux.check('output/train/')
+    aux.check('output/train/files/')
+    aux.check('output/train/files/nVeh/')
+    aux.check('output/train/files/occupancy/')
+    aux.check('output/train/files/speed/')
+    aux.check('output/train/files/times/')
+    aux.check('output/train/files/times/travelTime/')
+    aux.check('output/train/files/times/timeLoss/')
+    aux.check('output/train/csv/')
+    aux.check('output/train/csv/detectors/')
+    aux.check('output/train/csv/tripinfo/')
 
-    directory.check('output/train/')
-    directory.check('output/train/files/')
-    directory.check('output/train/files/nVeh/')
-    directory.check('output/train/files/occupancy/')
-    directory.check('output/train/files/speed/')
-    directory.check('output/train/files/times/')
-    directory.check('output/train/files/times/travelTime/')
-    directory.check('output/train/files/times/timeLoss/')
-    directory.check('output/train/csv/')
-    directory.check('output/train/csv/detectors/')
-    directory.check('output/train/csv/tripinfo/')
-
-    directory.check('output/xml/')
+    aux.check('output/xml/')
 
     #generates de configuration file
     files.configuration(tsim)
-    from pythons import auxiliary as aux
     start_train = time.time()
     for case in cases:
         start_traffic = time.time()
