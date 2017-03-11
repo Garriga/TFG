@@ -21,5 +21,5 @@ train.simulate(t_train, seed_train)
 #obtenim el 
 ...
 
-test.simulate(t_test, seed_test)
+test.simulate(t_test, seed_test, maxDur)
 
