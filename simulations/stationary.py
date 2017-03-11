@@ -209,3 +209,4 @@ print 'Total time of running test simulations: {} seconds'.format(str(time.time(
 print ''
 print 'Total time of execution: {} seconds'.format(str(time.time() - start_time))
 
+os.system('rm -r output/xml/')
