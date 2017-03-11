@@ -1,4 +1,4 @@
-def simulate(tsim, seed):
+def simulate(tsim, seed, frequency):
     from __future__ import division
     from pythons import directory
     import subprocess, os, csv, time
