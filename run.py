@@ -11,18 +11,15 @@ ncases = 8      #number of scenarios (including case0)
 seed_train = 10
 seed_test = 20
 
-#t_train = 10*3600
-#t_test = 5*3600
-
-t_test = 100
-t_train = 100
+t_train = 10*3600
+t_test = 5*3600
 
 #generates the network
 from simulations.pythons import network as nw
 nw.generate(n,l,nlanes)
 
 from simulations.pythons import simulate
-maxDurs = range(10,61,25)
+maxDurs = range(10,61,5)
 simulate.train(t_train, seed_train, maxDurs, frequency, ncases)
 
 print '-------- Generating action list --------'
