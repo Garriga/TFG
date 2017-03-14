@@ -5,11 +5,17 @@ args <- commandArgs(trailingOnly = TRUE)
 maxDur <- args[1]
 case <- args[2]
 header <- args[3]
-#extract inductionLoops data
-detName <- paste("output/train/csv/detectors/detectors", case, '_', maxDur, '.csv', sep = '')
+seed <- args[4]
+#paths to the directories with the data and the output
+path <- args[5]
+pathOut <- args[6]
+
+detName <- paste("path", "/detectors", case, 'm', maxDur, 's', seed, '.csv', sep = '')
+
 detectors <- read.csv(detName, sep = ";")
-#we preprocess the data.frame changing to most apropriate names
+#change to most apropriate names
 names(detectors) <- substring(names(detectors), 10)
+
 #extract the edge names
 extractEdge <- function(s) {
   pos <- regexpr("_", s)
@@ -45,6 +51,7 @@ measures <- lapply(var, getDf)
 names(measures) <- var
 speedFile <- sprintf("output/train/files/speed/speed%s.csv", maxDur)
 nVehFile <- sprintf("output/train/files/nVeh/nVeh%s.csv", maxDur)
+
 occupancyFile <- sprintf("output/train/files/occupancy/occupancy%s.csv", maxDur)
 if (header == 'False') {
   write.table(c(case, measures[['nVehContrib']]), file = nVehFile, quote = FALSE, sep = ';', col.names = c('case', names(measures[['nVehContrib']])), row.names = FALSE)

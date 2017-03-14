@@ -5,7 +5,7 @@ cost <- function(row, opt) {
 }
 
 args <- commandArgs(trailingOnly = TRUE)
-#n <- as.numeric(args[1])
+n <- as.numeric(args[1])
 cases <- paste('case', 0:(n-1), sep = '')
 
 maxDur <- integer(n)

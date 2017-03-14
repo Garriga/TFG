@@ -29,6 +29,7 @@ print '-------- Generating action list --------'
 #obtain the action list (creates output/actionList.txt) and take the best value for case0
 maxDur = subprocess.check_output(["Rscript", "analysis/actionlist.R", str(ncases)], universal_newlines=True)
 maxDur = int(maxDur)
+print 'Done\n'
 
 simulate.test(t_test, seed_test, maxDur, frequency, ncases)
 
