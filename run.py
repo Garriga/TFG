@@ -1,4 +1,4 @@
-import time, os
+import time, os, subprocess, csv
 start_time = time.time()
 #network parameters:
 n = 5           #size of the grid
@@ -25,11 +25,14 @@ from simulations.pythons import simulate
 maxDurs = range(10,61,25)
 simulate.train(t_train, seed_train, maxDurs, frequency, ncases)
 
-#obtain the maxDur value used
-maxDur = 16
+print '-------- Generating action list --------'
+#obtain the action list (creates output/actionList.txt) and take the best value for case0
+maxDur = subprocess.check_output(["Rscript", "analysis/actionlist.R", str(ncases)], universal_newlines=True)
+maxDur = int(maxDur)
 
 simulate.test(t_test, seed_test, maxDur, frequency, ncases)
 
 os.system('rm -r output/xml/')
+os.system('rm configuration.sumocfg')
 
-print '\nTotal time of execution: {} seconds'.format(str(time.time()-start_time))
+print 'Total time of execution: {} seconds'.format(str(time.time()-start_time))

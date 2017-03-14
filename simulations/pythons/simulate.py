@@ -67,6 +67,7 @@ def train(tsim, seed, values, frequency, ncases):
         timesLoss.close()
 
     print '\nTotal time of running train simulations: {} seconds'.format(str(time.time() - start_time))
+    print '_______________________________________________________________\n'
 
 #generates the data used for test
 def test (tsim, seed, maxDur, frequency,ncases):
@@ -97,7 +98,7 @@ def test (tsim, seed, maxDur, frequency,ncases):
         print 'Traffic generation time: {} seconds'.format(str(time.time() - start_traffic))
         print ''
 	    
-        print '-------- Simulating {case} with  maxDur of reference {maxDur} seconds --------'.format(case = case, maxDur = maxDur)
+        print '-------- Simulating case {case} with  maxDur of reference {maxDur} seconds --------'.format(case = case, maxDur = maxDur)
 	    #generate additional file for the simulation
         files.additional(maxDur, frequency)
      
@@ -110,3 +111,4 @@ def test (tsim, seed, maxDur, frequency,ncases):
         print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))
         
     print '\nTotal time of running test simulations: {} seconds'.format(str(time.time() - start_time))
+    print '_______________________________________________________________\n'
