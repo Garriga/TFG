@@ -1,9 +1,8 @@
-import csv, os
+import csv
 
-path = os.getcwd()
-edgelist = open(path + "/netDef/csv/edges.csv", 'r')
+edgelist = open("simulations/netDef/csv/edges.csv", 'r')
 
-datfile = open(path + "/postprocess/data/E.dat", 'w')
+datfile = open("simulations/postprocess/data/E.dat", 'w')
 reader = csv.reader(edgelist, delimiter = ';')
 datfile.write("{\n")
 

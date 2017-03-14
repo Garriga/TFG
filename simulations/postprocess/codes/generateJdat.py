@@ -4,10 +4,9 @@
 import csv
 import os
 
-path = os.getcwd()
-edgesfile = open(path + "/netDef/csv/edges.csv", 'r')
+edgesfile = open("simulations/netDef/csv/edges.csv", 'r')
 #relevant columns: 1: edge from, 3: edge to, 6: edge ID
-nodesfile = open(path + "/netDef/csv/nodes.csv", 'r')
+nodesfile = open("simulations/netDef/csv/nodes.csv", 'r')
 #relevant columns: 7: traffic light ID, 8: junction type,  9 : node ID 
 
 ereader = csv.reader(edgesfile, delimiter = ";")
@@ -40,7 +39,7 @@ def getEdges(n):
 	s = ' '.join(ls)
 	return s
 
-datfile = open(path + "/postprocess/data/J.dat", 'w')
+datfile = open("simulations/postprocess/data/J.dat", 'w')
 datfile.write("{\n")
 s = "\t{idx}:{{'JunctionID' : '{name}', 'index' : {idx}, 'edges' : {edgesList}, 'numEdges' : {num}}}"
 nodes = regulated.keys()

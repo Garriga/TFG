@@ -1,6 +1,6 @@
 library(plyr)
 path <- getwd()
-tll <- read.csv(paste(path, "/netDef/csv/mapa.tll.csv", sep=""), sep=";")
+tll <- read.csv(paste(path, "/simulations/netDef/csv/mapa.tll.csv", sep=""), sep=";")
 links <- subset(tll, is.na(tll$tlLogic_programID)) 
 #edges not controlled by traffic lights sould be discarted in a consecutive subsetting, but we should know 
 #how are written the connection if there are not traffic lights (in the grid network every connection has
@@ -35,7 +35,7 @@ links <- ddply(links, .(connection_from), merge)
 #THE ORDER IS NOT THE SAME THAN IN E.DAT, BECAUSE HERE NOT EVERY EDGE IS REPRESENTED, ONLY THE EDGES
 #CONTROLED BY A TRAFFIC LIGHT
 
-sink(paste(path, "/postprocess/data/C.dat", sep=""))
+sink(paste(path, "/simulations/postprocess/data/C.dat", sep=""))
 
 writelinks <- function(x) {
   l <- length(x)
