@@ -11,8 +11,8 @@ ncases = 8      #number of scenarios (including case0)
 seed_train = 10
 seed_test = 20
 
-t_train = 10*3600
-t_test = 5*3600
+t_train = 8*3600
+t_test = 4*3600
 
 #generates the network
 from simulations.pythons import network as nw
