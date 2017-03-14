@@ -1,12 +1,12 @@
-import subprocess, os, imp
+import subprocess, imp, os
 #generates de configuration file
 def configuration(t):
 	with open("configuration.sumocfg", 'w') as doc:	
 		print >> doc, '''<configuration>
 	<input>
-		<net-file value="input/mapa.net.xml"/>
-		<route-files value="input/rutes.rou.xml"/>>
-		<additional-files value="input/additional.add.xml"/>
+		<net-file value="simulations/input/mapa.net.xml"/>
+		<route-files value="simulations/input/rutes.rou.xml"/>>
+		<additional-files value="simulations/input/additional.add.xml"/>
 	</input>	
 	<output>
 		<tripinfo-output value="output/xml/tripinfo.xml"/>
@@ -20,37 +20,38 @@ def configuration(t):
 
 #this file generates the data given a nod.xml file (a network)
 def dat():
-	#generate the nod.xml and edge.xml files (for in case they are not given)
-	subprocess.call(["netconvert", "--sumo-net-file", "input/mapa.net.xml", "--plain-output", "netDef/xml/mapa"])
+    path = os.getcwd()	
+    #generate the nod.xml and edge.xml files (for in case they are not given)
+    subprocess.call(["netconvert", "--sumo-net-file", "simulations/input/mapa.net.xml", "--plain-output", "simulations/netDef/xml/mapa"])
 	#this command generates four files: mapa.nod.xml, mapa.edg.xml, mapa.tll.xml, mapa.edg.xml
 
 	#convert the xml files into csv
-	os.system("$SUMO_HOME/tools/xml/xml2csv.py netDef/xml/mapa.edg.xml -o netDef/csv/edges.csv")
-	os.system("$SUMO_HOME/tools/xml/xml2csv.py netDef/xml/mapa.nod.xml -o netDef/csv/nodes.csv")
-	os.system("$SUMO_HOME/tools/xml/xml2csv.py netDef/xml/mapa.tll.xml -o netDef/csv/mapa.tll.csv")
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py simulations/netDef/xml/mapa.edg.xml -o simulations/netDef/csv/edges.csv")
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py simulations/netDef/xml/mapa.nod.xml -o simulations/netDef/csv/nodes.csv")
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py simulations/netDef/xml/mapa.tll.xml -o simulations/netDef/csv/mapa.tll.csv")
 
 	#generate the J.dat file
-	modl = imp.load_source('generateJdat','postprocess/codes/generateJdat.py')
-	import generateJdat
-	generateJdat
+    modl = imp.load_source('generateJdat', path + '/simulations/postprocess/codes/generateJdat.py')
+    import generateJdat
+    generateJdat
 
 	#generates the E.dat file
-	modl = imp.load_source('generateEdgeFiles','postprocess/codes/generateEdgeFiles.py')
-	import generateEdgeFiles
-	generateEdgeFiles
-	
+    modl = imp.load_source('generateEdgeFiles', path + '/simulations/postprocess/codes/generateEdgeFiles.py')
+    import generateEdgeFiles
+    generateEdgeFiles
+
 	#generates the C.dat file
-	subprocess.call(["Rscript", "postprocess/codes/generateCdat.R"])
+    subprocess.call(["Rscript", path + "/simulations/postprocess/codes/generateCdat.R"])
 
 #generates the additional file
 def additional(maxDur, frequency):
-    C = eval(open("postprocess/data/C.dat").read())
-    E = eval(open("postprocess/data/E.dat").read())
-    J = eval(open("postprocess/data/J.dat").read())
-    with open("input/additional.add.xml", 'w') as doc:
+    path = os.getcwd()
+    C = eval(open("simulations/postprocess/data/C.dat").read())
+    E = eval(open("simulations/postprocess/data/E.dat").read())
+    J = eval(open("simulations/postprocess/data/J.dat").read())
+    with open("simulations/input/additional.add.xml", 'w') as doc:
         doc.write("<additional>\n")       
         #sets the detectors, one for every lane 
-        path = os.getcwd()
         inductionLoop = '\t<inductionLoop id="{name}" lane="{name}" pos="10" freq="{freq}" file="' + path + '/output/xml/detectors.xml"/>\n'
         for e in E:
             for i in range(E[e]['numLanes']):

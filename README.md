@@ -4,6 +4,7 @@ It also contains the programs used to analyze the data obtained.
 
 ## Simulations
 (this doesn't work yet, it is in process)
+The reference case is phaseDur of 40 seconds and minDur of 5 seconds.
 All the files must be executed having as working directory the simulations folder. 
 * The file **stationary.py** executes all the simulations of the stationary scenarios, that are * needed to know the measurements obtained on these situations.
 * The file **non_stationary.py** executes all the simulations for the non stationary scenarios, that are the ones used to test the classification method designed. 

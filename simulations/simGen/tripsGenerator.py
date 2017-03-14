@@ -1,8 +1,5 @@
 from __future__ import division
-import datetime
-import numpy
-import math
-import os
+import datetime, numpy, math
 
 def writeTrips(tbegin, tend, fileName, seed): 
 	numpy.random.seed(seed)
@@ -22,8 +19,7 @@ def writeTrips(tbegin, tend, fileName, seed):
 		#shape: L->linear, 'Q'-> quadratic
 	
 	#LOAD FLOWS DEFINITION DATA
-    
-	F = eval(open("simGen/cases/" + fileName + ".dat").read())
+	F = eval(open("simulations/simGen/cases/" + fileName + ".dat").read())
 	flows = []
 	for f in F:
 		FLOW = flow(F[f]['index'])	
@@ -64,8 +60,7 @@ def writeTrips(tbegin, tend, fileName, seed):
 				idx += 1
 		return(idx)
 	
-	path = os.getcwd()
-	with open(path + "/input/trips.trips.xml", 'w') as trips: 
+	with open("simulations/input/trips.trips.xml", 'w') as trips: 
 		trips.write("<!-- generated on {} by tripsGenerator.py-->\n".format(datetime.datetime))
 		trips.write("<trips>\n")
 		
@@ -74,5 +69,3 @@ def writeTrips(tbegin, tend, fileName, seed):
 			idx = writeLines(flow, idx, tbegin, tend)
 
 		trips.write("</trips>")
-		
-#writeTrips(0,3600)

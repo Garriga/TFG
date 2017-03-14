@@ -1,18 +1,18 @@
+from __future__ import division
+import os, csv
 def check(path):
-    import os
     directory = os.path.dirname(path)
     if not os.path.exists(directory):
         os.mkdir(directory)
 
-def getTimes(case, maxDur):
-    import csv
+def getTimes(case, maxDur, seed):
     totalTime = 0;
     totalLoss = 0;
     n = 0
     number = {}
     cumTime = {}
     cumLoss = {}
-    tripinfo = open ("output/train/csv/tripinfo/tripinfo{case}_{maxDur}.csv".format(case = case, maxDur = maxDur), 'r')
+    tripinfo = open ("output/train/csv/tripinfo/tripinfo{case}m{maxDur}s{seed}.csv".format(case = case, maxDur = maxDur, seed = seed), 'r')
     reader = csv.reader(tripinfo, delimiter = ';')
     row = next(reader)
     posTime = row.index('tripinfo_duration')
