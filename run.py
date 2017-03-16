@@ -30,6 +30,8 @@ print 'Done\n'
 
 simulate.test(t_test, seed_test, maxDur, frequency, ncases)
 
+simulate.nonstationary(t_test, seed_test, maxDur, frequency, ncases)
+
 os.system('rm -r output/xml/')
 os.system('rm configuration.sumocfg')
 

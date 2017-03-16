@@ -70,7 +70,7 @@ def train(tsim, seed, values, frequency, ncases):
     print '_______________________________________________________________\n'
 
 #generates the data used for test
-def test (tsim, seed, maxDur, frequency,ncases):
+def test(tsim, seed, maxDur, frequency,ncases):
     #it differs from the train function because in this case there is only one maxDur 
     #and then the files containing the times are not required
     start_time = time.time()
@@ -111,4 +111,48 @@ def test (tsim, seed, maxDur, frequency,ncases):
         print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))
         
     print '\nTotal time of running test simulations: {} seconds'.format(str(time.time() - start_time))
+    print '_______________________________________________________________\n'
+
+#generates the data used for test
+def nonstationary(tsim, seed, maxDur, frequency,ncases):
+    #it differs from the train function because in this case there is only one maxDur 
+    #and then the files containing the times are not required
+    start_time = time.time()
+
+    cases = range(1,ncases) #no case0NE
+    
+    aux.check('output/')
+
+    aux.check('output/NS/')
+    aux.check('output/NS/detectors/')
+    aux.check('output/NS/tripinfo/')
+
+    aux.check('output/xml/')
+
+    #generates de configuration file
+    files.configuration(tsim)
+    
+    for case in cases:
+        start_traffic = time.time()
+        print '-------- Generating traffic files --------'
+        #generates the traffic for the simulation
+        tripsGenerator.writeTrips(0, tsim, 'case' + str(case) + 'NS', seed)	
+        subprocess.call(["duarouter", "-n", "simulations/input/mapa.net.xml", "-t", "simulations/input/trips.trips.xml", "-o", "simulations/input/rutes.rou.xml", "--unsorted-input", "true", "--ignore-errors", "true", "--departspeed", "10", "--departlane", "free"])    
+    
+        print 'Traffic generation time: {} seconds'.format(str(time.time() - start_traffic))
+        print ''
+	    
+        print '-------- Simulating case NS {case} with  maxDur of reference {maxDur} seconds --------'.format(case = case, maxDur = maxDur)
+	    #generate additional file for the simulation
+        files.additional(maxDur, frequency)
+     
+        start_simulation = time.time()        
+        #runs the simulation
+        subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1", "--seed", str(seed)])
+        print ''
+        os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/NS/tripinfo/tripinfo{case}m{maxDur}s{seed}.csv".format(case = case, maxDur = maxDur, seed = seed))
+        os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/NS/detectors/detectors{case}m{maxDur}s{seed}.csv".format(case = case, maxDur = maxDur, seed = seed))
+        print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))
+        
+    print '\nTotal time of running non-stationary simulations: {} seconds'.format(str(time.time() - start_time))
     print '_______________________________________________________________\n'
