@@ -1,13 +1,12 @@
 import subprocess
 
+ncases = 8
+maxDur = 25
 seed_train = 10
 seed_test = 20
 
-maxDur = 25
-ncases = 8
-
 #put all the generated data for every case in one file (for each case)
 #train
-subprocess.call(['Rscript', 'analysis/preprocess/getDataFiles.R', 'train', str(seed_train), str(maxDur), str(ncases)])
+subprocess.call(['Rscript', 'analysis/preprocess/getDataFiles.R', 'train', str(maxDur), str(seed_train), str(ncases)])
 #test 
-subprocess.call(['Rscript', 'analysis/preprocess/getDataFiles.R', 'test', str(seed_test), str(maxDur), str(ncases)])
+subprocess.call(['Rscript', 'analysis/preprocess/getDataFiles.R', 'test', str(maxDur), str(seed_test), str(ncases)])

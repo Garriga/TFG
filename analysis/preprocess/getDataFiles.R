@@ -39,19 +39,19 @@ getDetectors <- function(type, case, maxDur, seed) {
   df <- getDf(var)
   #we remove the first 30 min of simulation because it is not a stationary phase (1 row = 1 min)
   df <- df[31:nrow(df),]
-  df$case <- paste('case', case, sep = '')
+  df$case <- case
   return(df)
 }
 
 args <- commandArgs(trailingOnly = TRUE)
 type <- args[1]
-seed <- args[2]
-maxDur <- args[3]
+maxDur <- args[2]
+seed <- args[3]
 ncases <- as.numeric(args[4])
 if (type == 'train') {
   df <- do.call(rbind, llply(0:(ncases-1), function(x) getDetectors(type, x, maxDur, seed)))
 } else if (type == 'test') {
   df <- do.call(rbind, llply(0:(ncases-1), function(x) getDetectors(type, x, maxDur, seed)))
 }
-fileOut = paste('output/', type, '/', type, '_m', maxDur, 's', seed, '.csv', sep = '')
+fileOut = paste('output/', type, '/', type, '.csv', sep = '')
 write.table(df, file = fileOut, sep = ";", quote = FALSE, row.names = FALSE) 
