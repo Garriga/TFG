@@ -14,5 +14,7 @@ The file run.py runs the simulations that will be used for training and the simu
 ## Requierements
 You need to have installed SUMO (Simulation for Urban Mobility), Python and R. 
 It is also necessary to have as environment variable the variable SUMO$HOME (that allows SUMO$HOME/tools/...). See more details in the SUMO installation documentation.  
+
+It required python2 (it works with version 2.7.12), with python3 it has some problems. 
 **R packages**: plyr, tictoc
 
