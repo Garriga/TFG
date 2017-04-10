@@ -18,14 +18,31 @@ def configuration(t):
 </configuration>
 '''.format(str(t))
 
+def configuration2(begin, end):
+	with open("configuration.sumocfg", 'w') as doc:	
+		print >> doc, '''<configuration>
+	<input>
+		<net-file value="simulations/input/mapa.net.xml"/>
+		<route-files value="simulations/input/rutes.rou.xml"/>>
+		<additional-files value="simulations/input/additional.add.xml"/>
+	</input>	
+	<output>
+		<tripinfo-output value="output/xml/tripinfo.xml"/>
+	</output>
+	<time>
+		<begin value="{b}"/>
+		<end value="{e}"/>
+	</time>
+</configuration>
+'''.format(b = str(begin), e = str(end+1))
+
 #this file generates the data given a nod.xml file (a network)
 def dat():
     path = os.getcwd()	
     #generate the nod.xml and edge.xml files (for in case they are not given)
     subprocess.call(["netconvert", "--sumo-net-file", "simulations/input/mapa.net.xml", "--plain-output", "simulations/netDef/xml/mapa"])
-	#this command generates four files: mapa.nod.xml, mapa.edg.xml, mapa.tll.xml, mapa.edg.xml
-
-	#convert the xml files into csv
+	#this command generates four files: mapa.nod.xml, mapa.edg.xml, mapa.tll.xml, mapa.edg.xml 
+	#convert the xml files into csv 
     os.system("$SUMO_HOME/tools/xml/xml2csv.py simulations/netDef/xml/mapa.edg.xml -o simulations/netDef/csv/edges.csv")
     os.system("$SUMO_HOME/tools/xml/xml2csv.py simulations/netDef/xml/mapa.nod.xml -o simulations/netDef/csv/nodes.csv")
     os.system("$SUMO_HOME/tools/xml/xml2csv.py simulations/netDef/xml/mapa.tll.xml -o simulations/netDef/csv/mapa.tll.csv")

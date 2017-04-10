@@ -1,12 +1,12 @@
 import numpy as np
 import time
-from keras.utils import np_utils
 ncases = 8
+np.random.seed(1000)
+
 def clean(data, ncases):
 	X = np.delete(data, 0, 0)
 	(rows, cols) = X.shape
 	Y = X[:,cols-1]
-	Y = np_utils.to_categorical(Y, ncases)
 	X = np.delete(X, cols-1,1)
 	X = X.astype('float32')
 	return (X,Y) 
@@ -20,40 +20,56 @@ data = np.genfromtxt('output/test/test.csv', delimiter = ';')
 (X_test, Y_test) = clean(data, ncases)
 del data
 
-#neural network using keras
-from keras.models import Sequential
-from keras.layers import Dense, Activation
-(rows, cols) = X_train.shape
+#preprocess
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+scaler.fit(X_train)
+X_train = scaler.transform(X_train)
+X_test = scaler.transform(X_test)
 
-#define the network
-np.random.seed(1000)
-model = Sequential()
-model.add(Dense(128, activation = 'relu', input_shape = (cols,)))
-model.add(Dense(ncases, activation = 'softmax'))
+#define the method
+from sklearn.neural_network import MLPClassifier
+layers = [20, 10, 8]
+activation = 'relu'
+alpha = 0.001
+type_rate = 'adaptive'
+rate = 0.1
+momentum = 0.09
+max_iter = 2000
+model = MLPClassifier(
+	solver = 'sgd',
+	hidden_layer_sizes = layers,
+	activation = activation,
+	learning_rate = type_rate,
+	learning_rate_init = rate,
+	alpha = alpha,
+	momentum = momentum,
+	max_iter = max_iter,
+	shuffle = True,
+	verbose = 2,
+)
+	
+#train the model
+model.fit(X_train, Y_train)
 
-model.summary()
+#test the model
+from sklearn.metrics import accuracy_score, log_loss
+Y_pred = model.predict(X_train)
+Y_prob = model.predict_proba(X_train)
+print('The accuracy obtained for train data is {:.4f} and the cross entropy is {:.4f}'
+	.format(accuracy_score(Y_train, Y_pred), 
+	log_loss(Y_train,Y_prob)))
 
-#define the optimizer
-from keras.optimizers import SGD
-lr = 0.01
-decay = 0
-optim = SGD(lr = lr, decay = decay, momentum = 0.9, nesterov = True)
-model.compile(loss='categorical_crossentropy', 
-	optimizer = optim, 
-	metrics = ['accuracy'])
+Y_pred = model.predict(X_test)
+Y_prob = model.predict_proba(X_test)
+print('The accuracy obtained for test data is {:.4f} and the cross entropy is {:.4f}'
+	.format(accuracy_score(Y_test, Y_pred), 
+	log_loss(Y_test,Y_prob)))
 
-#train the network and evaluation
-batch_size = 10
-nb_epoch = 2
-verbose = 2
-t = time.time()
-history = model.fit(X_train, Y_train, 
-	batch_size = batch_size,
-	epochs = nb_epoch,
-	verbose = verbose,
-	validation_data = (X_test,Y_test))
-
-print(time.time() - t, 'seconds')
-import matplotlib.pyplot as plt  
-from utils import plot_curves
-plot_curves(history, nb_epoch)
+from sklearn.metrics import classification_report, confusion_matrix
+names = ['case' + str(s) for s in range(0,ncases)]
+print(classification_report(Y_test, Y_pred, target_names = names))
+print(confusion_matrix(Y_test, Y_pred))
+#save the model
+from sklearn.externals import joblib
+joblib.dump(model, 'analysis/models/neuralnetwork.pkl')

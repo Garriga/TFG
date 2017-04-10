@@ -1,5 +1,7 @@
+#decision tree
+from sklearn import tree
 import numpy as np
-import time
+np.random.seed(1000)
 ncases = 8
 
 def clean(data, ncases):
@@ -19,15 +21,16 @@ data = np.genfromtxt('output/test/test.csv', delimiter = ';')
 (X_test, Y_test) = clean(data, ncases)
 del data
 
-#define the method
-from sklearn import neighbors as nb
-np.random.seed(1000)
-n = 25
-model = nb.KNeighborsClassifier(n_neighbors = n, weights = 'uniform', 
-	algorithm = 'auto', metric = 'minkowski')
-
-#train the model
-model.fit(X_train, Y_train)
+depth = 12
+min_samples_split = 30
+min_samples_leaf = 5
+criterion = 'entropy'
+model = tree.DecisionTreeClassifier(
+	criterion = criterion,
+	max_depth = depth,
+	min_samples_split = min_samples_split,
+	min_samples_leaf = min_samples_leaf)
+model = model.fit(X_train, Y_train)
 
 #test the model
 from sklearn.metrics import accuracy_score, log_loss
@@ -47,6 +50,12 @@ from sklearn.metrics import classification_report
 names = ['case' + str(s) for s in range(0,ncases)]
 print(classification_report(Y_test, Y_pred, target_names = names))
 
+#plot the decison tree
+import pydotplus
+dot_data = tree.export_graphviz(model, out_file = None)
+graph = pydotplus.graph_from_dot_data(dot_data)
+graph.write_png('analysis/models/graphtree.png')
+
 #save the model
 from sklearn.externals import joblib
-joblib.dump(model, 'analysis/models/nearestneighbour.pkl')
+joblib.dump(model, 'analysis/models/decisiontree.pkl')

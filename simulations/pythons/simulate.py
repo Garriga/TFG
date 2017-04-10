@@ -9,11 +9,6 @@ def train(tsim, seed, values, frequency, ncases):
 
     cases = range(0,ncases)
 
-    aux.check('output/')
-    aux.check('output/test/')
-    aux.check('output/test/detectors/')
-    aux.check('output/test/tripinfo/')
-
     aux.check('output/train/')
     aux.check('output/train/times/')
     aux.check('output/train/times/travelTime/')
@@ -113,7 +108,6 @@ def test(tsim, seed, maxDur, frequency,ncases):
     print '\nTotal time of running test simulations: {} seconds'.format(str(time.time() - start_time))
     print '_______________________________________________________________\n'
 
-#generates the data used for test
 def nonstationary(tsim, seed, maxDur, frequency,ncases):
     #it differs from the train function because in this case there is only one maxDur 
     #and then the files containing the times are not required
@@ -156,3 +150,47 @@ def nonstationary(tsim, seed, maxDur, frequency,ncases):
         
     print '\nTotal time of running non-stationary simulations: {} seconds'.format(str(time.time() - start_time))
     print '_______________________________________________________________\n'
+    
+def changeTLS(t_change, t_sim, seed, maxDur1, maxDur2, frequency, case, algorithm):
+	
+    aux.check('output/')
+    aux.check('output/changeTLS/')
+    aux.check('output/changeTLS/detectors/')
+    aux.check('output/changeTLS/detectors/' + algorithm + '/')
+    aux.check('output/changeTLS/tripinfo/')
+    aux.check('output/changeTLS/tripinfo/' + algorithm + '/')
+    
+    aux.check('output/xml/')
+    
+    #generates the traffic for the simulation
+    tripsGenerator.writeTrips(0, t_sim, 'case' + str(case), seed)	
+    subprocess.call(["duarouter", "-n", "simulations/input/mapa.net.xml", "-t", "simulations/input/trips.trips.xml", "-o", "simulations/input/rutes.rou.xml", "--unsorted-input", "true", "--ignore-errors", "true", "--departspeed", "10", "--departlane", "free"])
+    
+    #runs the simulation
+    files.additional(maxDur1, frequency)
+    files.configuration2(0,t_change)
+    subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1", "--seed", str(seed), "--save-state.times", str(t_change), "--save-state.files", "state.sbx"])
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/tripinfo1.csv")
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/detectors1.csv")
+    #reconfigure the tls
+    files.configuration2(t_change, t_sim)
+    files.additional(maxDur2, frequency)
+    #continue the simulation with the new configuration
+    subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1", "--seed", str(seed), "--load-state", "state.sbx"])
+    
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/tripinfo2.csv")
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/detectors2.csv")
+	
+	#merge the files into one
+    os.system("mv output/tripinfo1.csv output/changeTLS/tripinfo/{algorithm}/tripinfo{case}s{seed}.csv".format(
+		algorithm = algorithm, case = case, seed = seed))
+    os.system("tail -n +2 output/tripinfo2.csv >> output/changeTLS/tripinfo/{algorithm}/tripinfo{case}s{seed}.csv".format(
+		algorithm = algorithm, case = case, seed = seed))
+    
+    os.system("mv output/detectors1.csv output/changeTLS/detectors/{algorithm}/detectors{case}s{seed}.csv".format(
+		algorithm = algorithm, case = case, seed = seed))
+    os.system("tail -n +2 output/detectors2.csv >> output/changeTLS/detectors/{algorithm}/detectors{case}s{seed}.csv".format(
+		algorithm = algorithm, case = case, seed = seed))
+    
+    os.system("rm output/detectors2.csv")
+    os.system("rm output/tripinfo2.csv")

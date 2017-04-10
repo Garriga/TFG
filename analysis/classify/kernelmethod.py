@@ -1,5 +1,5 @@
 import numpy as np
-import time
+np.random.seed(1000)
 ncases = 8
 
 def clean(data, ncases):
@@ -19,15 +19,20 @@ data = np.genfromtxt('output/test/test.csv', delimiter = ';')
 (X_test, Y_test) = clean(data, ncases)
 del data
 
-#define the method
-from sklearn import neighbors as nb
-np.random.seed(1000)
-n = 25
-model = nb.KNeighborsClassifier(n_neighbors = n, weights = 'uniform', 
-	algorithm = 'auto', metric = 'minkowski')
-
-#train the model
-model.fit(X_train, Y_train)
+from sklearn import svm
+from sklearn.model_selection import GridSearchCV
+model = svm.SVC(
+	probability = True
+)
+parameters = [
+	{'kernel' : ['rbf'], 'gamma' : ['auto', 1e-4, 1e-3, 0.01, 0.1, 1, 2, 3], 
+	'C' : [0.001, 0.01, 0.1, 1]},
+	{'kernel' : ['linear'], 'C' : [0.001, 0.01, 0.1, 1]}]
+model = GridSearchCV(model, parameters, verbose = 3)
+model = model.fit(X_train, Y_train)
+print('The best parameters obtained are:')
+print(model.best_params_)
+print('')
 
 #test the model
 from sklearn.metrics import accuracy_score, log_loss
@@ -49,4 +54,4 @@ print(classification_report(Y_test, Y_pred, target_names = names))
 
 #save the model
 from sklearn.externals import joblib
-joblib.dump(model, 'analysis/models/nearestneighbour.pkl')
+joblib.dump(model, 'analysis/models/svm.pkl')

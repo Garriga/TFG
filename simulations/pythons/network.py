@@ -10,7 +10,6 @@ def generate(n,l,nlanes):
 
     #generates the network
     networkgenerator.networkgenerator(l,n, nlanes)
-
-    #generates the necessary files (C.dat, J.dat, E.dat ...)
+	#generates the necessary files (C.dat, J.dat, E.dat ...)
     aux.check('simulations/postprocess/data/')
     files.dat()

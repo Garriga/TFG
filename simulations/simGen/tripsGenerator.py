@@ -61,7 +61,6 @@ def writeTrips(tbegin, tend, fileName, seed):
 		return(idx)
 	
 	with open("simulations/input/trips.trips.xml", 'w') as trips: 
-		trips.write("<!-- generated on {} by tripsGenerator.py-->\n".format(datetime.datetime))
 		trips.write("<trips>\n")
 		
 		idx = 0
