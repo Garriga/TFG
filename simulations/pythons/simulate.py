@@ -145,7 +145,7 @@ def nonstationary(tsim, seed, maxDur, frequency,ncases):
         subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1", "--seed", str(seed)])
         print ''
         os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/NS/tripinfo/tripinfo{case}m{maxDur}s{seed}.csv".format(case = case, maxDur = maxDur, seed = seed))
-        os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/NS/detectors/detectors{case}m{maxDur}s{seed}.csv".format(case = case, maxDur = maxDur, seed = seed))
+        os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/NS/detectors/original/detectors{case}m{maxDur}s{seed}.csv".format(case = case, maxDur = maxDur, seed = seed))
         print 'Simulation and conversion time {} seconds'.format(str(time.time() - start_simulation))
         
     print '\nTotal time of running non-stationary simulations: {} seconds'.format(str(time.time() - start_time))
@@ -163,9 +163,8 @@ def changeTLS(t_change, t_sim, seed, maxDur1, maxDur2, frequency, case, algorith
     aux.check('output/xml/')
     
     #generates the traffic for the simulation
-    tripsGenerator.writeTrips(0, t_sim, 'case' + str(case), seed)	
+    tripsGenerator.writeTrips(0, t_sim, 'case' + str(case) + 'NS', seed)	
     subprocess.call(["duarouter", "-n", "simulations/input/mapa.net.xml", "-t", "simulations/input/trips.trips.xml", "-o", "simulations/input/rutes.rou.xml", "--unsorted-input", "true", "--ignore-errors", "true", "--departspeed", "10", "--departlane", "free"])
-    
     #runs the simulation
     files.additional(maxDur1, frequency)
     files.configuration2(0,t_change)
@@ -191,6 +190,79 @@ def changeTLS(t_change, t_sim, seed, maxDur1, maxDur2, frequency, case, algorith
 		algorithm = algorithm, case = case, seed = seed))
     os.system("tail -n +2 output/detectors2.csv >> output/changeTLS/detectors/{algorithm}/detectors{case}s{seed}.csv".format(
 		algorithm = algorithm, case = case, seed = seed))
+    
+    os.system("rm output/detectors2.csv")
+    os.system("rm output/tripinfo2.csv")
+
+def build_string(breaks):
+	n = len(breaks)
+	s = str(breaks[0])
+	for i in range(1,n):
+		s += ',' + str(breaks[i])
+	return(s)
+	
+def save_states(t_sim, seed, maxDur, frequency, case):
+    aux.check('output/')
+    aux.check('output/testTLS/')
+    aux.check('output/testTLS/states/')
+    aux.check('output/testTLS/detectors/')
+    aux.check('output/testTLS/detectors/original/')
+    aux.check('output/testTLS/tripinfo/')
+    
+    aux.check('output/xml/')
+    
+    #generates the traffic for the simulation
+    tripsGenerator.writeTrips(0, t_sim, 'case' + str(case) + 'NS', seed)	
+    subprocess.call(["duarouter", "-n", "simulations/input/mapa.net.xml", "-t", "simulations/input/trips.trips.xml", "-o", "simulations/input/rutes.rou.xml", "--unsorted-input", "true", "--ignore-errors", "true", "--departspeed", "10", "--departlane", "free"])
+    break_times = range(115*60, 156*60, 60)	#every minute (40 states saved)
+    times = build_string(break_times)
+    
+    #runs the simulations to save all the states
+    files.additional(maxDur, frequency)
+    files.configuration2(0,t_sim)
+    subprocess.call(['sumo', '-c', 'configuration.sumocfg', '--xml-validation', 'never', '--time-to-teleport', '-1', '--seed', str(seed),
+		'--save-state.times', times, '--save-state.prefix', 'output/testTLS/states/state'])
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/testTLS/tripinfo.csv")
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/testTLS/detectors.csv")
+
+def run_states(t_change, t_sim, seed, maxDur1, maxDur2, frequency, case):
+    aux.check('output/')
+    aux.check('output/testTLS/')
+    aux.check('output/testTLS/states/')
+    aux.check('output/testTLS/detectors/')
+    aux.check('output/testTLS/detectors/original/')
+    aux.check('output/testTLS/tripinfo/')
+    
+    aux.check('output/xml/')
+    
+    #generates the traffic for the simulation
+    tripsGenerator.writeTrips(0, t_sim, 'case' + str(case) + 'NS', seed)	
+    subprocess.call(["duarouter", "-n", "simulations/input/mapa.net.xml", "-t", "simulations/input/trips.trips.xml", "-o", "simulations/input/rutes.rou.xml", "--unsorted-input", "true", "--ignore-errors", "true", "--departspeed", "10", "--departlane", "free"])
+    #runs the simulation
+    files.additional(maxDur1, frequency)
+    files.configuration2(0,t_change)
+    subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1", "--seed", str(seed), "--save-state.times", str(t_change), "--save-state.files", "state.sbx"])
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/tripinfo1.csv")
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/detectors1.csv")
+    #reconfigure the tls
+    files.configuration2(t_change, t_sim)
+    files.additional(maxDur2, frequency)
+    #continue the simulation with the new configuration
+    subprocess.call(["sumo", "-c", "configuration.sumocfg", "--xml-validation", "never", "--time-to-teleport", "-1", "--seed", str(seed), "--load-state", "state.sbx"])
+    
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/tripinfo.xml -o output/tripinfo2.csv")
+    os.system("$SUMO_HOME/tools/xml/xml2csv.py output/xml/detectors.xml -o output/detectors2.csv")
+	
+	#merge the files into one
+    os.system("mv output/tripinfo1.csv output/testTLS/tripinfo/tripinfo{case}s{seed}t{time}.csv".format(
+		case = case, seed = seed, time = str(t_change)))
+    os.system("tail -n +2 output/tripinfo2.csv >> output/testTLS/tripinfo/tripinfo{case}s{seed}t{time}.csv".format(
+		case = case, seed = seed, time = str(t_change)))
+    
+    os.system("mv output/detectors1.csv output/testTLS/detectors/original/detectors{case}s{seed}t{time}.csv".format(
+		case = case, seed = seed, time = str(t_change)))
+    os.system("tail -n +2 output/detectors2.csv >> output/testTLS/detectors/original/detectors{case}s{seed}t{time}.csv".format(
+		case = case, seed = seed, time = str(t_change)))
     
     os.system("rm output/detectors2.csv")
     os.system("rm output/tripinfo2.csv")

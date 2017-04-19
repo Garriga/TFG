@@ -1,5 +1,6 @@
+#bayes
 import numpy as np
-import time
+np.random.seed(1000)
 ncases = 8
 
 def clean(data, ncases):
@@ -19,15 +20,10 @@ data = np.genfromtxt('output/test/test.csv', delimiter = ';')
 (X_test, Y_test) = clean(data, ncases)
 del data
 
-#define the method
-from sklearn import neighbors as nb
-np.random.seed(1000)
-n = 25
-model = nb.KNeighborsClassifier(n_neighbors = n, weights = 'uniform', 
-	algorithm = 'auto', metric = 'minkowski')
-
-#train the model
-model.fit(X_train, Y_train)
+#build the model
+from sklearn.naive_bayes import GaussianNB
+model = GaussianNB()
+model = model.fit(X_train, Y_train)
 
 #test the model
 from sklearn.metrics import accuracy_score, log_loss
@@ -51,4 +47,5 @@ print(confusion_matrix(Y_test, Y_pred))
 
 #save the model
 from sklearn.externals import joblib
-joblib.dump(model, 'analysis/models/nearestneighbour.pkl')
+joblib.dump(model, 'analysis/models/bayes.pkl')
+

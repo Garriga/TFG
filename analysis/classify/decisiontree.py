@@ -22,8 +22,8 @@ data = np.genfromtxt('output/test/test.csv', delimiter = ';')
 del data
 
 depth = 12
-min_samples_split = 30
-min_samples_leaf = 5
+min_samples_split = 11
+min_samples_leaf = 1
 criterion = 'entropy'
 model = tree.DecisionTreeClassifier(
 	criterion = criterion,
@@ -46,15 +46,17 @@ print('The accuracy obtained for test data is {:.4f} and the cross entropy is {:
 	.format(accuracy_score(Y_test, Y_pred), 
 	log_loss(Y_test,Y_prob)))
 
-from sklearn.metrics import classification_report
+#metrics of the model
+from sklearn.metrics import classification_report, confusion_matrix
 names = ['case' + str(s) for s in range(0,ncases)]
 print(classification_report(Y_test, Y_pred, target_names = names))
+print(confusion_matrix(Y_test, Y_pred))
 
 #plot the decison tree
-import pydotplus
-dot_data = tree.export_graphviz(model, out_file = None)
-graph = pydotplus.graph_from_dot_data(dot_data)
-graph.write_png('analysis/models/graphtree.png')
+#import pydotplus
+#dot_data = tree.export_graphviz(model, out_file = None)
+#graph = pydotplus.graph_from_dot_data(dot_data)
+#graph.write_png('analysis/models/graphtree.png')
 
 #save the model
 from sklearn.externals import joblib

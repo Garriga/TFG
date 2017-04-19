@@ -20,17 +20,20 @@ nw.generate(n,l,nlanes)
 
 from simulations.pythons import simulate
 maxDurs = range(10,61,5)
-simulate.train(t_train, seed_train, maxDurs, frequency, ncases)
+#simulate.train(t_train, seed_train, maxDurs, frequency, ncases)
 
 print '-------- Generating action list --------'
 #obtain the action list (creates output/actionList.txt) and take the best value for case0
-maxDur = subprocess.check_output(["Rscript", "analysis/actionlist.R", str(ncases)], universal_newlines=True)
-maxDur = int(maxDur)
-print 'Done\n'
+#maxDur = subprocess.check_output(["Rscript", "analysis/actionlist.R", str(ncases)], universal_newlines=True)
+#maxDur = int(maxDur)
+#print 'Done\n'
+maxDur = 25
 
-simulate.test(t_test, seed_test, maxDur, frequency, ncases)
+#simulate.test(t_test, seed_test, maxDur, frequency, ncases)
 
-simulate.nonstationary(t_test, seed_test, maxDur, frequency, ncases)
+seeds = range(20, 111, 10)
+for seed in seeds:
+	simulate.nonstationary(t_test, seed, maxDur, frequency, ncases)
 
 os.system('rm -r output/xml/')
 os.system('rm configuration.sumocfg')

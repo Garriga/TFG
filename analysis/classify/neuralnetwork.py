@@ -29,7 +29,7 @@ X_test = scaler.transform(X_test)
 
 #define the method
 from sklearn.neural_network import MLPClassifier
-layers = [20, 10, 8]
+layers = [9]
 activation = 'relu'
 alpha = 0.001
 type_rate = 'adaptive'
@@ -66,10 +66,13 @@ print('The accuracy obtained for test data is {:.4f} and the cross entropy is {:
 	.format(accuracy_score(Y_test, Y_pred), 
 	log_loss(Y_test,Y_prob)))
 
+#metrics of the model
 from sklearn.metrics import classification_report, confusion_matrix
 names = ['case' + str(s) for s in range(0,ncases)]
 print(classification_report(Y_test, Y_pred, target_names = names))
 print(confusion_matrix(Y_test, Y_pred))
+
 #save the model
 from sklearn.externals import joblib
 joblib.dump(model, 'analysis/models/neuralnetwork.pkl')
+joblib.dump(scaler, 'analysis/models/neuralnetwork_scaler.pkl')

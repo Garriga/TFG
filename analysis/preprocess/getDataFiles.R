@@ -62,7 +62,7 @@ if (type == 'train') {
   write.table(df, file = fileOut, sep = ";", quote = FALSE, row.names = FALSE) 
 } else if (type == 'NS') {
   for (i in 1:(ncases-1)) {
-    fileOut <- paste('output/NS/detectors/postprocess/case', i, '.csv', sep = '')
+    fileOut <- paste('output/NS/detectors/postprocess/case', i, 's', seed, '.csv', sep = '')
     write.table(getDetectors(type, i, maxDur, seed), file = fileOut, sep = ';', quote = FALSE, row.names = FALSE)
     cat('case', i, 'done\n')
   }

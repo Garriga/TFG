@@ -21,11 +21,16 @@ def writeTrips(tbegin, tend, fileName, seed):
 	#LOAD FLOWS DEFINITION DATA
 	F = eval(open("simulations/simGen/cases/" + fileName + ".dat").read())
 	flows = []
+	
+	def printflow(flow):
+		print('flow: ' + str(flow.ID) + ' f0: ' + str(flow.flow0) + ' max: ' + str(flow.maxFlow) + ' t0: ' + str(flow.t0) + ' tf: ' + str(flow.tf))
+	
 	for f in F:
 		FLOW = flow(F[f]['index'])	
-		FLOW.setValues(F[f]['origin'], F[f]['destination'], F[f]['flow0'], F[f]['maxFlow'], F[f]['t0'], F[f]['tf'], F[f]['shape'], F[f]['n'])
+		FLOW.setValues(F[f]['origin'], F[f]['destination'], F[f]['flow0'], 
+			F[f]['maxFlow'], F[f]['t0'], F[f]['tf'], F[f]['shape'], F[f]['n'])
 		flows.append(FLOW)
-	
+		
 	def growth(y0, x0, y, x, xbegin, xend, shape):
 		exp = []
 		exp0 = y0
@@ -33,9 +38,12 @@ def writeTrips(tbegin, tend, fileName, seed):
 		if (shape == 'L'):
 			m = (y-y0)/(x-x0)
 			for i in range(tbegin, tend):
-				if (i < x0): exp.append(exp0)
-				elif (i > x): exp.append(expmax)
-				else: exp.append(exp0+m*(i-x0))
+				if (i < x0): 
+					exp.append(exp0)
+				elif (i > x): 
+					exp.append(expmax)
+				else: 
+					exp.append(exp0+m*(i-x0))
 		elif (shape == 'Q'):
 			a = (y-y0)/(x-x0)**2
 			for i in range(tbegin, tend):
@@ -49,7 +57,7 @@ def writeTrips(tbegin, tend, fileName, seed):
 		trip = '\t<trip id="{id}" depart="{dep}" from="{org}" to="{to}" />\n'	
 		#the number of vehicles inseted every second follows a binomial distribution
 		n = flow.n
-		exp = growth(flow.flow0/60, flow.t0, flow.maxFlow/60, flow.tf, tbegin, tend, flow.shape)	
+		exp = growth(flow.flow0/60, flow.t0, flow.maxFlow/60, flow.tf, tbegin, tend, flow.shape)
 		for t in range(tbegin, tend):
 			p = exp[t]/n
 			if(p > 1):

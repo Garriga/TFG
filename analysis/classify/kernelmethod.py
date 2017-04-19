@@ -20,19 +20,14 @@ data = np.genfromtxt('output/test/test.csv', delimiter = ';')
 del data
 
 from sklearn import svm
-from sklearn.model_selection import GridSearchCV
 model = svm.SVC(
-	probability = True
+	probability = True,
+	kernel = 'rbf',
+	C = 1,
+	gamma = 0.0001
 )
-parameters = [
-	{'kernel' : ['rbf'], 'gamma' : ['auto', 1e-4, 1e-3, 0.01, 0.1, 1, 2, 3], 
-	'C' : [0.001, 0.01, 0.1, 1]},
-	{'kernel' : ['linear'], 'C' : [0.001, 0.01, 0.1, 1]}]
-model = GridSearchCV(model, parameters, verbose = 3)
 model = model.fit(X_train, Y_train)
-print('The best parameters obtained are:')
-print(model.best_params_)
-print('')
+
 
 #test the model
 from sklearn.metrics import accuracy_score, log_loss
@@ -48,9 +43,11 @@ print('The accuracy obtained for test data is {:.4f} and the cross entropy is {:
 	.format(accuracy_score(Y_test, Y_pred), 
 	log_loss(Y_test,Y_prob)))
 
-from sklearn.metrics import classification_report
+#metrics of the model
+from sklearn.metrics import classification_report, confusion_matrix
 names = ['case' + str(s) for s in range(0,ncases)]
 print(classification_report(Y_test, Y_pred, target_names = names))
+print(confusion_matrix(Y_test, Y_pred))
 
 #save the model
 from sklearn.externals import joblib
